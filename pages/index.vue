@@ -20,7 +20,7 @@
           <p class="esquecisenha" @click="handlePasswordReset">Esqueci minha senha</p>
           <br>
           <!-- Link para cadastro -->
-          <p class="senha" @click="navigateTo('/register')">Cadastrar</p>
+          <p class="senha" @click="navigateTo('/Cadastro')">Cadastrar</p>
           
         </div>
         <!-- Botão principal de envio -->
