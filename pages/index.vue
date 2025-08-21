@@ -4,28 +4,19 @@
   <div class="login-container">
     <!-- Wrapper contendo o título e o formulário -->
     <div class="header-and-form-wrapper">
-      <!-- Título de boas vindas -->
       <h1 class="bemvindo">Bem-vindo!</h1>
-      <!-- Texto explicativo abaixo do título -->
       <p class="subtitle">Faça login para continuar.</p>
-      <!-- Formulário principal de login -->
       <form @submit.prevent="handleLogin">
         <!-- Campo de usuário -->
         <input v-model="username" type="text" placeholder="Nome de usuário" required />
         <!-- Campo de senha -->
         <input v-model="password" type="password" placeholder="Senha" required />
-        <!-- Links secundários (esqueci senha e cadastro) -->
         <div class="link-container">
-          <!-- Link para recuperação de senha -->
           <p class="esquecisenha" @click="handlePasswordReset">Esqueci minha senha</p>
           <br>
-          <!-- Link para cadastro -->
           <p class="senha" @click="navigateTo('/Cadastro')">Cadastrar</p>
-          
         </div>
-        <!-- Botão principal de envio -->
         <button type="submit">Entrar</button>
-        
       </form>
     </div>
   </div>
@@ -40,20 +31,29 @@ const username = ref('');
 const password = ref('');
 
 // Função chamada ao submeter o formulário
-const handleLogin = () => {
-  // Caso seja o admin
-  if (username.value === 'admin' && password.value === '123') {
-    alert('Login de administrador bem-sucedido!');
-    navigateTo('/admin/dashboard');
-  } 
-  // Caso seja o colaborador
-  else if (username.value === 'colaborador' && password.value === '123') {
-    alert('Login de colaborador bem-sucedido!');
-    navigateTo('/feedback');
-  } 
-  // Caso contrário, usuário incorreto
-  else {
-    alert('Usuário ou senha incorretos!');
+const handleLogin = async () => {
+  try {
+    const response = await $fetch('/api/login', {
+      method: 'POST',
+      body: {
+        email: username.value,
+        password: password.value,
+      },
+    });
+
+    if (response.success) {
+      alert(response.message);
+      if (response.role === 'admin') {
+        navigateTo('/dashboard');
+      } else {
+        navigateTo('/feedback');
+      }
+    } else {
+      alert(response.message);
+    }
+  } catch (error) {
+    console.error('Erro de rede:', error);
+    alert('Erro de conexão. Tente novamente.');
   }
 };
 
